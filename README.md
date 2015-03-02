@@ -1,1 +1,1 @@
-# pytech-mysite
+# Django Best Practices
