@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 
 class Publisher(models.Model):
     name = models.CharField(max_length=30)
@@ -14,6 +15,9 @@ class Publisher(models.Model):
 
     def __unicode__(self):  
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('publisher-detail', kwargs={'pk': self.pk})
 
 class Author(models.Model):
     salutation = models.CharField(max_length=10)
