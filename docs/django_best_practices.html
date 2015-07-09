@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Django Best Practices</title>
+<!-- 2015-07-09 Thu 09:14 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Boey Pak Cheong" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Django Best Practices</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Prerequisites</a></li>
+<li><a href="#sec-2">2. Tutorial Objectives</a></li>
+<li><a href="#sec-3">3. Coding Style</a>
+<ul>
+<li><a href="#sec-3-1">Follow PEP8</a>
+<ul>
+<li><a href="#sec-3-1-1">Readability Counts</a></li>
+<li><a href="#sec-3-1-2">Consistency - but use your judgement,don't break backwards compatibilty just to comply with the PEP</a></li>
+<li><a href="#sec-3-1-3">Code Layout</a></li>
+<li><a href="#sec-3-1-4">Import Style</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-4">4. Django Environment Setup</a>
+<ul>
+<li><a href="#sec-4-1">Use Virtualenv and Pip</a></li>
+<li><a href="#sec-4-2">Use a Requirements file with Pip</a></li>
+<li><a href="#sec-4-3">Use a version control system</a></li>
+<li><a href="#sec-4-4">Use the same database engine for both development and production</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5. Project Layout</a>
+<ul>
+<li><a href="#sec-5-1">Django's default layout</a></li>
+<li><a href="#sec-5-2">Preferred Layout from Two Scoops of Django</a></li>
+<li><a href="#sec-5-3">Where is the virtualenv?</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">6. Some tips on App design</a>
+<ul>
+<li><a href="#sec-6-1">Golden Rule</a></li>
+<li><a href="#sec-6-2">Keep Apps small</a></li>
+</ul>
+</li>
+<li><a href="#sec-7">7. Front-end management</a></li>
+<li><a href="#sec-8">8. Bootstrapping</a></li>
+<li><a href="#sec-9">9. Settings and requirements files</a>
+<ul>
+<li>
+<ul>
+<li><a href="#sec-9-0-1">Default settings.py</a></li>
+<li><a href="#sec-9-0-2">Put all your settings file under version control</a></li>
+<li><a href="#sec-9-0-3">Use multiple settings file</a></li>
+<li><a href="#sec-9-0-4">Sample development settings</a></li>
+<li><a href="#sec-9-0-5">Keep secret keys secret!</a></li>
+<li><a href="#sec-9-0-6">Requirement files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-10">10. Models/Database Best Practices</a>
+<ul>
+<li><a href="#sec-10-1">Think through the models design</a></li>
+<li><a href="#sec-10-2"></a></li>
+</ul>
+</li>
+<li><a href="#sec-11">11. Views</a>
+<ul>
+<li><a href="#sec-11-1">What are CBVs anyway?</a></li>
+<li><a href="#sec-11-2">Guide on learning CBVs</a></li>
+</ul>
+</li>
+<li><a href="#sec-12">12. Forms</a></li>
+<li><a href="#sec-13">13. Front End</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Prerequisites</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>you should already know the basics of Django. At least you should have gone through the tutorials in the Django documentation.
+</li>
+<li>HTML knowledge is assumed
+</li>
+<li>basic css and javascript
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Tutorial Objectives</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>illustrate with examples some best practices for Django
+</li>
+<li>integration with Bower to manage front-end packages installation and dependencies
+</li>
+<li>how to develop responsive sites
+</li>
+<li>understanding and learning how to use class-based views
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Coding Style</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Follow a standard coding style :
+</p>
+</div>
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">Follow PEP8</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Reference : <a href="https://www.python.org/dev/peps/pep-0008/">https://www.python.org/dev/peps/pep-0008/</a>
+</p>
+</div>
+<div id="outline-container-sec-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1">Readability Counts</h4>
+</div>
+<div id="outline-container-sec-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2">Consistency - but use your judgement,don't break backwards compatibilty just to comply with the PEP</h4>
+</div>
+<div id="outline-container-sec-3-1-3" class="outline-4">
+<h4 id="sec-3-1-3">Code Layout</h4>
+<div class="outline-text-4" id="text-3-1-3">
+<ol class="org-ol">
+<li>Indentation - 4 spaces
+</li>
+<li>Line length - maximum 79 characters
+</li>
+<li>Separate top-level function and class definitions with two blank lines.
+</li>
+<li>Use blank lines in functions, sparingly, to indicate logical sections.
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-3-1-4" class="outline-4">
+<h4 id="sec-3-1-4">Import Style</h4>
+<div class="outline-text-4" id="text-3-1-4">
+<p>
+PEP8 suggested style for imports :
+</p>
+<ol class="org-ol">
+<li>"Imports should usually be on separate lines, e.g. :"
+</li>
+</ol>
+
+<div class="org-src-container">
+
+<pre class="src src-python"><span style="color: #a020f0;">import</span> sys
+<span style="color: #a020f0;">import</span> os
+
+<span style="color: #a020f0;">import</span> sys, os   <span style="color: #b22222;"># </span><span style="color: #b22222;">Not recommended</span>
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>"Imports are always put at the top of the file, just after any module comments and docstrings, 
+and before module globals and constants."
+</li>
+
+<li>Group the imports in the following order
+
+<ul class="org-ul">
+<li>standard library imports
+</li>
+<li>related third party imports
+</li>
+<li>local application/library specific imports
+</li>
+</ul>
+<p>
+With a blank line between each group of imports
+</p>
+</li>
+
+<li>Use explicit relative imports where applicable 
+</li>
+
+<li>Don't use import *
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Django Environment Setup</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1">Use Virtualenv and Pip</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>De facto standard for Django projects
+</li>
+<li>Virtualenv is used to create isolated Python environments
+</li>
+<li>Pip is a tool for installing and managing Python packages, with support for Virtualenv
+Python 2.7.9+ include pip by default.  See <a href="https://pip.pypa.io/en/latest/installing.html">https://pip.pypa.io/en/latest/installing.html</a> for installation instructions.
+</li>
+<li>Install virtualenv with Pip :
+$ pip install virtualenv
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2">Use a Requirements file with Pip</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Recommended way is to install Django, other dependencies and Python packages using Pip
+</p>
+</div>
+</div>
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3">Use a version control system</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+Preferably either Git or Mercurial
+</p>
+</div>
+</div>
+<div id="outline-container-sec-4-4" class="outline-3">
+<h3 id="sec-4-4">Use the same database engine for both development and production</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+A common developer mistake is to use SqLite3 for development and another database such as PostgreSQL in production.
+</p>
+
+<p>
+Their behaviour is not identical. For example, they handle field types and constraints differently.
+</p>
+
+<p>
+The bottom line is to use the same database everywhere. Most Django developers prefer PostgreSQL.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Project Layout</h2>
+<div class="outline-text-2" id="text-5">
+</div><div id="outline-container-sec-5-1" class="outline-3">
+<h3 id="sec-5-1">Django's default layout</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+Effective from Django 1.5, the default project layout has changed. The default layout for Django 1.7 is as follows :
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">$ django-admin.py startproject mysite
+$ cd mysite
+$ python mange.py startapp myapp
+</pre>
+</div>
+
+<pre class="example">
+mysite/
+   manage.py
+   myapp/
+      admin.py
+      __init__.py  
+      migrations/
+      models.py
+      tests.py
+      views.py
+   mysite/
+      __init__.py
+      settings.py
+      urls.py
+      wsgi.py
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-5-2" class="outline-3">
+<h3 id="sec-5-2">Preferred Layout from Two Scoops of Django</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+A 3-tiered structured as follows:
+</p>
+
+<pre class="example">
+&lt;repository_root&gt;/
+   .gitignore
+   docs/
+   README.md
+   requirements.txt
+   ...
+   &lt;django_project_root&gt;/
+      manage.py
+      &lt;configuration_root&gt;/
+         settings.py
+         urls.py
+         wsgi.py
+</pre>
+
+<p>
+I normally use a 2-tiered approach, using the &lt;Django_project_root&gt; as the &lt;repository_root&gt;. 
+</p>
+</div>
+</div>
+<div id="outline-container-sec-5-3" class="outline-3">
+<h3 id="sec-5-3">Where is the virtualenv?</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+One way is to keep all your virtualenvs in a separate directory.
+</p>
+
+<p>
+Example on Windows :
+</p>
+
+<pre class="example">
+C:\django_projects\claims_project
+C:\envs\claims
+</pre>
+
+<p>
+Example on Linux/Mac OS X :
+</p>
+
+<pre class="example">
+~/django_projects/claims_project
+~/envs/claims
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Some tips on App design</h2>
+<div class="outline-text-2" id="text-6">
+</div><div id="outline-container-sec-6-1" class="outline-3">
+<h3 id="sec-6-1">Golden Rule</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+This is a golden rule for developing Django apps from James Bennet, a Django core developer and release manager :
+</p>
+
+<blockquote>
+<p>
+  The art of creating and maintaining a good Django app is that it should follow the
+truncated Unix philosophy according to Douglas McIlroy: 'Write programs that do one
+thing and do it well.'
+</p>
+</blockquote>
+</div>
+</div>
+<div id="outline-container-sec-6-2" class="outline-3">
+<h3 id="sec-6-2">Keep Apps small</h3>
+</div>
+</div>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Front-end management</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li>new approach to managing front-end packages and dependencies is Bower <a href="http://bower.io/">http://bower.io/</a>.
+</li>
+<li>Bower requires Node, npm and Git
+</li>
+<li>Install Node.js from <a href="http://nodejs.org/">http://nodejs.org/</a>
+</li>
+<li>Install Bower globally :
+</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-sh">$ npm install -g bower
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Bootstrapping</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Let's learn some best practices by diving into code.
+</p>
+
+<p>
+We will use the models in <a href="https://docs.djangoproject.com/en/1.7/topics/class-based-views/generic-display/#generic-views-of-objects">https://docs.djangoproject.com/en/1.7/topics/class-based-views/generic-display/#generic-views-of-objects</a>
+to illustrate the best practices. (I have added a slug field to the Publisher model).
+</p>
+
+<p>
+To follow along clone the git repository  :
+</p>
+
+<pre class="example">
+$ git clone https://github.com/pcboey/django-best-practices.git
+</pre>
+
+<p>
+Create a virtualenv named mysite_tutorial. 
+Activate the virtualenv in the project root and do a
+</p>
+<pre class="example">
+$ pip install -r requirements.txt
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Settings and requirements files</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+Django 1.7 provides more than 130 settings.
+</p>
+</div>
+
+<div id="outline-container-sec-9-0-1" class="outline-4">
+<h4 id="sec-9-0-1">Default settings.py</h4>
+<div class="outline-text-4" id="text-9-0-1">
+<p>
+The settings.py file created when you run <i>django-admin.py startproject mysite</i> is as follows :
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-python"><span style="color: #8b2252;">"""</span>
+<span style="color: #8b2252;">Django settings for mysite project.</span>
+
+<span style="color: #8b2252;">For more information on this file, see</span>
+<span style="color: #8b2252;">https://docs.djangoproject.com/en/1.7/topics/settings/</span>
+
+<span style="color: #8b2252;">For the full list of settings and their values, see</span>
+<span style="color: #8b2252;">https://docs.djangoproject.com/en/1.7/ref/settings/</span>
+<span style="color: #8b2252;">"""</span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Build paths inside the project like this: os.path.join(BASE_DIR, ...)</span>
+<span style="color: #a020f0;">import</span> os
+<span style="color: #a0522d;">BASE_DIR</span> = os.path.dirname(os.path.dirname(__file__))
+
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Quick-start development settings - unsuitable for production</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/</span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">SECURITY WARNING: keep the secret key used in production secret!</span>
+<span style="color: #a0522d;">SECRET_KEY</span> = <span style="color: #8b2252;">'wadlc97w2jb(4(!w4^%zlyvk%f=j2tt7b4m-39p(j6btjbui6a'</span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">SECURITY WARNING: don't run with debug turned on in production!</span>
+<span style="color: #a0522d;">DEBUG</span> = <span style="color: #008b8b;">True</span>
+
+<span style="color: #a0522d;">TEMPLATE_DEBUG</span> = <span style="color: #008b8b;">True</span>
+
+<span style="color: #a0522d;">ALLOWED_HOSTS</span> = []
+
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Application definition</span>
+
+<span style="color: #a0522d;">INSTALLED_APPS</span> = (
+    <span style="color: #8b2252;">'django.contrib.admin'</span>,
+    <span style="color: #8b2252;">'django.contrib.auth'</span>,
+    <span style="color: #8b2252;">'django.contrib.contenttypes'</span>,
+    <span style="color: #8b2252;">'django.contrib.sessions'</span>,
+    <span style="color: #8b2252;">'django.contrib.messages'</span>,
+    <span style="color: #8b2252;">'django.contrib.staticfiles'</span>,
+)
+
+<span style="color: #a0522d;">MIDDLEWARE_CLASSES</span> = (
+    <span style="color: #8b2252;">'django.contrib.sessions.middleware.SessionMiddleware'</span>,
+    <span style="color: #8b2252;">'django.middleware.common.CommonMiddleware'</span>,
+    <span style="color: #8b2252;">'django.middleware.csrf.CsrfViewMiddleware'</span>,
+    <span style="color: #8b2252;">'django.contrib.auth.middleware.AuthenticationMiddleware'</span>,
+    <span style="color: #8b2252;">'django.contrib.auth.middleware.SessionAuthenticationMiddleware'</span>,
+    <span style="color: #8b2252;">'django.contrib.messages.middleware.MessageMiddleware'</span>,
+    <span style="color: #8b2252;">'django.middleware.clickjacking.XFrameOptionsMiddleware'</span>,
+)
+
+<span style="color: #a0522d;">ROOT_URLCONF</span> = <span style="color: #8b2252;">'mysite.urls'</span>
+
+<span style="color: #a0522d;">WSGI_APPLICATION</span> = <span style="color: #8b2252;">'mysite.wsgi.application'</span>
+
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Database</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">https://docs.djangoproject.com/en/1.7/ref/settings/#databases</span>
+
+<span style="color: #a0522d;">DATABASES</span> = {
+    <span style="color: #8b2252;">'default'</span>: {
+        <span style="color: #8b2252;">'ENGINE'</span>: <span style="color: #8b2252;">'django.db.backends.sqlite3'</span>,
+        <span style="color: #8b2252;">'NAME'</span>: os.path.join(BASE_DIR, <span style="color: #8b2252;">'db.sqlite3'</span>),
+    }
+}
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Internationalization</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">https://docs.djangoproject.com/en/1.7/topics/i18n/</span>
+
+<span style="color: #a0522d;">LANGUAGE_CODE</span> = <span style="color: #8b2252;">'en-us'</span>
+
+<span style="color: #a0522d;">TIME_ZONE</span> = <span style="color: #8b2252;">'UTC'</span>
+
+<span style="color: #a0522d;">USE_I18N</span> = <span style="color: #008b8b;">True</span>
+
+<span style="color: #a0522d;">USE_L10N</span> = <span style="color: #008b8b;">True</span>
+
+<span style="color: #a0522d;">USE_TZ</span> = <span style="color: #008b8b;">True</span>
+
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Static files (CSS, JavaScript, Images)</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">https://docs.djangoproject.com/en/1.7/howto/static-files/</span>
+
+<span style="color: #a0522d;">STATIC_URL</span> = <span style="color: #8b2252;">'/static/'</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-9-0-2" class="outline-4">
+<h4 id="sec-9-0-2">Put all your settings file under version control</h4>
+</div>
+<div id="outline-container-sec-9-0-3" class="outline-4">
+<h4 id="sec-9-0-3">Use multiple settings file</h4>
+<div class="outline-text-4" id="text-9-0-3">
+<p>
+Reset the workspace to step 1.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-bash">$ git checkout -f step-1
+</pre>
+</div>
+
+<p>
+The way to do this is taken from "The One True Way" by Jacob Kaplan-Moss, The Best (and Worst) of Django talk at OSCON 2011
+</p>
+
+<p>
+<a href="http://www.slideshare.net/jacobian/the-best-and-worst-of-django">http://www.slideshare.net/jacobian/the-best-and-worst-of-django</a> 
+</p>
+
+<p>
+Basically you replace the settings.py file with a directory named settings which contains something like this :
+</p>
+
+<pre class="example">
+settings/
+   __init__.py
+   base.py
+   staging.py
+   production.py
+   local.py
+</pre>
+
+<dl class="org-dl">
+<dt> base.py </dt><dd>Contains settings common to all project instances
+</dd>
+<dt> staging.py </dt><dd>settings for running a semi-private version of the site on a production server
+</dd>
+<dt> production.py </dt><dd>settings for running your live production server
+</dd>
+<dt> local.py </dt><dd>local development settings, e.g. DEBUG, activate developer specific tools such as django-debug-toolbar, 
+EMAIL_HOST = 'localhost', EMAIL_PORT = 1025
+</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-sec-9-0-4" class="outline-4">
+<h4 id="sec-9-0-4">Sample development settings</h4>
+<div class="outline-text-4" id="text-9-0-4">
+<div class="org-src-container">
+
+<pre class="src src-python"><span style="color: #b22222;"># </span><span style="color: #b22222;">settings/local.py</span>
+<span style="color: #a020f0;">from</span> .base <span style="color: #a020f0;">import</span> *
+
+<span style="color: #a0522d;">DEBUG</span> = <span style="color: #008b8b;">True</span>
+<span style="color: #a0522d;">TEMPLATE_DEBUG</span> = DEBUG
+
+<span style="color: #a0522d;">DATABASES</span> = {
+    <span style="color: #8b2252;">"default"</span>: {
+        <span style="color: #8b2252;">"ENGINE"</span>: <span style="color: #8b2252;">"django.db.backends.postgresql_psycopg2"</span>,
+        <span style="color: #8b2252;">"NAME"</span>: <span style="color: #8b2252;">"mysitedb"</span>,
+        <span style="color: #8b2252;">"USER"</span>: <span style="color: #8b2252;">"bob"</span>,
+        <span style="color: #8b2252;">"PASSWORD"</span>: <span style="color: #8b2252;">"bob123"</span>,
+        <span style="color: #8b2252;">"HOST"</span>: <span style="color: #8b2252;">"localhost"</span>,
+        <span style="color: #8b2252;">"PORT"</span>: <span style="color: #8b2252;">""</span>,
+    }
+}
+
+<span style="color: #a0522d;">EMAIL_HOST</span> = <span style="color: #8b2252;">"localhost"</span>
+<span style="color: #a0522d;">EMAIL_PORT</span> = 1025
+
+<span style="color: #a0522d;">INTERNAL_IPS</span> = (<span style="color: #8b2252;">"127.0.0.1"</span>,)
+<span style="color: #a0522d;">INSTALLED_APPS</span> += (<span style="color: #8b2252;">"debug_toolbar"</span>, )
+
+<span style="color: #a0522d;">MIDDLEWARE_CLASSES</span> += \
+(<span style="color: #8b2252;">"debug_toolbar.middleware.DebugToolbarMiddleware"</span>, )
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>To start your Python shell using settings/local.py :
+</li>
+</ul>
+
+<pre class="example">
+$ python manage.py shell --settings=settings.local
+</pre>
+
+<ul class="org-ul">
+<li>To run the development server :
+</li>
+</ul>
+
+<pre class="example">
+$ python manage.py runserver --settings=settings.local
+</pre>
+
+<ul class="org-ul">
+<li>Deploy on production server (wsgi.py) :
+</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-python"><span style="color: #a0522d;">os.environ</span>[<span style="color: #8b2252;">'DJANGO_SETTINGS_MODULE'</span>] = settings.production
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-9-0-5" class="outline-4">
+<h4 id="sec-9-0-5">Keep secret keys secret!</h4>
+<div class="outline-text-4" id="text-9-0-5">
+<ul class="org-ul">
+<li>Do not keep secret keys such as SECRET_KEY, AWS keys and server-specific items under version control. 
+</li>
+<li>Keep them in environment variables.
+</li>
+</ul>
+<p>
+On Linux and Mac, for a single project add lines like the following into a .bashrc, bash_profile 
+or .profile file (this is distribution dependent) :
+</p>
+
+<pre class="example">
+export MYSITE_SECRET_KEY=wadlc97w2jb(4(!w4^%zlyvk%f=j2tt7c4n-39p(j6btabui6b
+</pre>
+
+<p>
+For multiple projects put lines like the above into the virtualenv bin/activate script.
+</p>
+
+<p>
+To access these environment variables in a settings file do the following :
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-python"><span style="color: #a020f0;">import</span> os
+<span style="color: #a0522d;">SECRET_KEY</span> = os.environ[<span style="color: #8b2252;">"MYSITE_SECRET_KEY"</span>]
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-9-0-6" class="outline-4">
+<h4 id="sec-9-0-6">Requirement files</h4>
+<div class="outline-text-4" id="text-9-0-6">
+<p>
+In the project root, create a directory called requirements and in it create requirements files for each environment :
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-bash">$ mkdir requirements
+$ touch requirements/{base.txt,local.txt,production.txt}
+
+$ workon mysite_dev
+$ pip install -r requirements/local.txt
+
+$ workon mysite
+$ pip install -r requirements/production.txt
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> Models/Database Best Practices</h2>
+<div class="outline-text-2" id="text-10">
+</div><div id="outline-container-sec-10-1" class="outline-3">
+<h3 id="sec-10-1">Think through the models design</h3>
+</div>
+<div id="outline-container-sec-10-2" class="outline-3">
+<h3 id="sec-10-2"></h3>
+</div>
+</div>
+<div id="outline-container-sec-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> Views</h2>
+<div class="outline-text-2" id="text-11">
+<ul class="org-ul">
+<li>Function-based views (FBVs) or class-based views (CBVs)?
+</li>
+<li>Learn to use both
+</li>
+</ul>
+</div>
+<div id="outline-container-sec-11-1" class="outline-3">
+<h3 id="sec-11-1">What are CBVs anyway?</h3>
+<div class="outline-text-3" id="text-11-1">
+<ul class="org-ul">
+<li>CBVs provide abstract classes implementing common web development tasks
+</li>
+<li>use Python's object orientation and multiple inheritance for extensibility
+</li>
+<li>powerful but has steeper learning curve compared to FBVs
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-11-2" class="outline-3">
+<h3 id="sec-11-2">Guide on learning CBVs</h3>
+<div class="outline-text-3" id="text-11-2">
+</div><ul class="org-ul"><li><a id="sec-11-2-0-1" name="sec-11-2-0-1"></a>Start with TemplateView<br  /><div class="outline-text-5" id="text-11-2-0-1">
+<ul class="org-ul">
+<li>Build an <i>about.html</i> template and view it on the mysite example project.
+</li>
+<li>Reference : <a href="https://docs.djangoproject.com/en/1.7/topics/class-based-views/#basic-examples">https://docs.djangoproject.com/en/1.7/topics/class-based-views/#basic-examples</a>
+</li>
+</ul>
+</div>
+</li>
+<li><a id="sec-11-2-0-2" name="sec-11-2-0-2"></a>Subclass a ListView and DetailView<br  /><div class="outline-text-5" id="text-11-2-0-2">
+<p>
+Continue reading the docs and learn how to subclass a ListView and DetailView to render model data into a template.
+</p>
+
+<p>
+Once you have got these basics, we can then move on to tackling the details of customizing CBVs.
+</p>
+</div>
+</li>
+<li><a id="sec-11-2-0-3" name="sec-11-2-0-3"></a>Customizing CBVs<br  /><div class="outline-text-5" id="text-11-2-0-3">
+<ul class="org-ul">
+<li>Most of the work consists of subclassing the appropriate built-in class-based generic view and override one or two methods
+</li>
+<li>Use the <i>context_object_name</i> attribute of a generic view to specify a "user friendly" context variable. For example, in the
+PublisherDetailView the default context variable is <i>object</i>. Change this to <i>publisher</i> by setting the <i>context_object_name</i>
+attribute.
+</li>
+<li>Use <i>get_context_data()</i> to add extra variables (context) to a template
+See example in <a href="https://docs.djangoproject.com/en/1.7/topics/class-based-views/generic-display/#adding-extra-context">https://docs.djangoproject.com/en/1.7/topics/class-based-views/generic-display/#adding-extra-context</a> and implement it.
+</li>
+<li>Dynamic filtering. 
+
+<p>
+Now write a view that will display all books by any arbitrary publisher.
+Refer to <a href="https://docs.djangoproject.com/en/1.7/topics/class-based-views/generic-display/#dynamic-filtering">https://docs.djangoproject.com/en/1.7/topics/class-based-views/generic-display/#dynamic-filtering</a>
+especially on what is stored in <i>self</i> when a CBV is called.
+</p>
+</li>
+</ul>
+</div>
+</li></ul>
+</div>
+</div>
+<div id="outline-container-sec-12" class="outline-2">
+<h2 id="sec-12"><span class="section-number-2">12</span> Forms</h2>
+<div class="outline-text-2" id="text-12">
+<p>
+Must read : <a href="https://docs.djangoproject.com/en/1.7/topics/class-based-views/generic-editing/">https://docs.djangoproject.com/en/1.7/topics/class-based-views/generic-editing/</a>
+</p>
+<ul class="org-ul">
+<li>Implement the basic contact form described therein
+</li>
+<li>You should already be using ModelForm whenever you can. The generic CBVs, <i>CreateView, UpdateView and DeleteView</i>, will
+automatically create a ModelForm as long as they know which model class to use.
+</li>
+<li>Add <i>get_absolute_url()</i> to the Author class and test on the shell
+</li>
+<li>Next use CreateView, UpdateView and DeleteView to do the work
+</li>
+<li>install django-registration (login required for next example). 
+Reference : <a href="https://django-registration.readthedocs.org/en/latest/quickstart.html">https://django-registration.readthedocs.org/en/latest/quickstart.html</a>
+Include django-registration into requirements/base.txt and run 
+<div class="org-src-container">
+
+<pre class="src src-sh">$ pip install -r requirements/base.txt
+</pre>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> Front End</h2>
+<div class="outline-text-2" id="text-13">
+<p>
+Bootstrap : <a href="http://getbootstrap.com/getting-started/">http://getbootstrap.com/getting-started/</a>
+(Or run bootstrap docs locally with jekyll server and browse to <a href="http://0.0.0.0:9001/">http://0.0.0.0:9001/</a>, see docs on how to do this)
+Create .bowerrc file (install into directory "static/assets")
+Bower install bootstrap
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Boey Pak Cheong, <a href="mailto:pcboey@pytech.com.my">pcboey@pytech.com.my</a></p>
+<p class="date">Date: March 04, 2015</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.3.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+</div>
+</body>
+</html>
